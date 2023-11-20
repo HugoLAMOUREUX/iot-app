@@ -15,6 +15,14 @@ class _DayComponentState extends State<DayComponent> {
   bool isChecked = false;
 
   @override
+  void initState() {
+    super.initState();
+    isChecked = Provider.of<NewDrugData>(context, listen: false)
+        .days
+        .contains(widget.day);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Consumer<NewDrugData>(
       builder: (context, newDrugData, child) => GestureDetector(

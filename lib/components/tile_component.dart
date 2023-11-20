@@ -29,22 +29,27 @@ class _TileComponentState extends State<TileComponent> {
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                    child: Text(
-                  widget.title,
-                  style: const TextStyle(fontSize: 20),
-                )),
-                Icon(widget.isOpen
-                    ? Icons.arrow_downward_outlined
-                    : Icons.arrow_forward_ios),
-              ],
-            ),
-            widget.isOpen ? widget.child : Container(),
-          ],
+        child: AnimatedSize(
+          duration: const Duration(milliseconds: 200),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                      child: Text(
+                    widget.title,
+                    style: const TextStyle(fontSize: 20),
+                  )),
+                  Icon(widget.isOpen
+                      ? Icons.arrow_downward_outlined
+                      : Icons.arrow_forward_ios),
+                ],
+              ),
+              widget.isOpen ? widget.child : Container(),
+            ],
+          ),
         ),
       ),
     );
