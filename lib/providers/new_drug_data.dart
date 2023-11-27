@@ -6,7 +6,7 @@ import 'package:mqtt_client/mqtt_server_client.dart';
 
 class NewDrugData extends ChangeNotifier {
   List<String> _days = [];
-  late DateTime _time;
+  DateTime _time = DateTime.now();
   String _name = '';
 
   void addDay(String day) {
@@ -40,7 +40,7 @@ class NewDrugData extends ChangeNotifier {
 
   // envoyer les données sur le broker MQTT
 
-  final client = MqttServerClient('test.mosquitto.org', '');
+  final client = MqttServerClient('192.168.31.55', '');
 
   var pongCount = 0; // Pong counter
 

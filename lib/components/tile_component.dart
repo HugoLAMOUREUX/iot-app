@@ -1,7 +1,4 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:iot_app/screens/adding_page/day_component.dart';
 
 // ignore: must_be_immutable
 class TileComponent extends StatefulWidget {
