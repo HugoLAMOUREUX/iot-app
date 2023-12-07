@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -40,7 +41,8 @@ class NewDrugData extends ChangeNotifier {
 
   // envoyer les données sur le broker MQTT
 
-  final client = MqttServerClient('192.168.31.55', '');
+  final client = MqttServerClient('192.168.31.149', '');
+  // final client = MqttServerClient('192.168.65.176', '');
 
   var pongCount = 0; // Pong counter
 
@@ -124,48 +126,47 @@ class NewDrugData extends ChangeNotifier {
       exit(-1);
     }
 
-    /// Ok, lets try a subscription
-    print('EXAMPLE::Subscribing to the test/lol topic');
-    const topic = 'test/lol'; // Not a wildcard topic
-    client.subscribe(topic, MqttQos.atMostOnce);
-
-    /// The client has a change notifier object(see the Observable class) which we then listen to to get
-    /// notifications of published updates to each subscribed topic.
-    client.updates!.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
-      final recMess = c![0].payload as MqttPublishMessage;
-      final pt =
-          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-
-      /// The above may seem a little convoluted for users only interested in the
-      /// payload, some users however may be interested in the received publish message,
-      /// lets not constrain ourselves yet until the package has been in the wild
-      /// for a while.
-      /// The payload is a byte buffer, this will be specific to the topic
-      print(
-          'EXAMPLE::Change notification:: topic is <${c[0].topic}>, payload is <-- $pt -->');
-      print('');
-    });
-
-    /// If needed you can listen for published messages that have completed the publishing
-    /// handshake which is Qos dependant. Any message received on this stream has completed its
-    /// publishing handshake with the broker.
-    client.published!.listen((MqttPublishMessage message) {
-      print(
-          'EXAMPLE::Published notification:: topic is ${message.variableHeader!.topicName}, with Qos ${message.header!.qos}');
-    });
-
     /// Lets publish to our topic
     /// Use the payload builder rather than a raw buffer
     /// Our known topic to publish to
-    const pubTopic = 'Dart/Mqtt_client/testtopic';
+    const pubTopic = 'medication';
     final builder = MqttClientPayloadBuilder();
-    builder.addString('Hello from mqtt_client');
 
     /// Subscribe to it
-    print('EXAMPLE::Subscribing to the Dart/Mqtt_client/testtopic topic');
     client.subscribe(pubTopic, MqttQos.exactlyOnce);
 
+    int getDayIndex(String day) {
+      switch (day) {
+        case 'Lundi':
+          return 0;
+        case 'Mardi':
+          return 1;
+        case 'Mercredi':
+          return 2;
+        case 'Jeudi':
+          return 3;
+        case 'Vendredi':
+          return 4;
+        case 'Samedi':
+          return 5;
+        case 'Dimanche':
+          return 6;
+        default:
+          return -1; // Indication d'une erreur ou d'une valeur non valide
+      }
+    }
+
     /// Publish it
+    final drugData = {
+      'name': _name,
+      'days': _days.map((day) => getDayIndex(day)).toList(),
+      'hour': _time.hour,
+      'minute': _time.minute,
+    };
+
+    final jsonPayload = jsonEncode(drugData);
+    builder.addString(jsonPayload);
+
     print('EXAMPLE::Publishing our topic');
     client.publishMessage(pubTopic, MqttQos.exactlyOnce, builder.payload!);
 
@@ -176,7 +177,7 @@ class NewDrugData extends ChangeNotifier {
 
     /// Finally, unsubscribe and exit gracefully
     print('EXAMPLE::Unsubscribing');
-    client.unsubscribe(topic);
+    client.unsubscribe(pubTopic);
 
     /// Wait for the unsubscribe message from the broker if you wish.
     await MqttUtilities.asyncSleep(2);
