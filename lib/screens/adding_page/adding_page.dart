@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:iot_app/components/tile_component.dart';
+import 'package:iot_app/models/drug_model.dart';
+import 'package:iot_app/providers/drugs.dart';
 import 'package:iot_app/providers/new_drug_data.dart';
 import 'package:iot_app/screens/adding_page/list_day.dart';
 import 'package:iot_app/screens/adding_page/select_time.dart';
@@ -64,18 +66,23 @@ class _AddingPageState extends State<AddingPage> {
             // bouton de validation pour envoyer les données
             Padding(
               padding: const EdgeInsets.only(top: 20),
-              child: Consumer<NewDrugData>(
-                builder: (context, newDrugData, child) => ElevatedButton(
-                  onPressed: () {
-                    if (newDrugData.days.isNotEmpty && newDrugData.name != '') {
-                      newDrugData.sendData();
-                      Navigator.pop(context);
-                    }
-                    // ajouter le médicament à la liste
-                    // Provider.of<NewDrugData>(context, listen: false).addDrug();
-                    // retourner à la page d'accueil
-                  },
-                  child: const Text('Ajouter'),
+              child: Consumer<Drugs>(
+                builder: (context, drugs, child) => Consumer<NewDrugData>(
+                  builder: (context, newDrugData, child) => ElevatedButton(
+                    onPressed: () {
+                      if (newDrugData.days.isNotEmpty &&
+                          newDrugData.name != '') {
+                        drugs.addDrug(DrugModel(
+                            name: newDrugData.name,
+                            days: newDrugData.days.toList(),
+                            hour: newDrugData.time.hour,
+                            minute: newDrugData.time.minute));
+                        newDrugData.sendData();
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text('Ajouter'),
+                  ),
                 ),
               ),
             ),
