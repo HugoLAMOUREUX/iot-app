@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:iot_app/providers/new_drug_data.dart';
 import 'package:iot_app/screens/adding_page/adding_page.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -27,8 +28,21 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _controller.text =
-        Provider.of<NewDrugData>(context, listen: false).ipAddress;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      if (prefs.getString('ipAddress') != null) {
+        if (mounted) {
+          Provider.of<NewDrugData>(context, listen: false).ipAddress =
+              prefs.getString('ipAddress')!;
+        }
+      }
+    });
+
+    if (mounted) {
+      _controller.text =
+          Provider.of<NewDrugData>(context, listen: false).ipAddress;
+    }
   }
 
   @override
@@ -86,6 +100,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 ),
                 onPressed: () {
                   newDrugData.initializeClient();
+                  SharedPreferences.getInstance().then((prefs) {
+                    prefs.setString('ipAddress', newDrugData.ipAddress);
+                  });
+                  FocusScope.of(context).unfocus();
                 },
                 child: const Text('Valider'),
               ),
