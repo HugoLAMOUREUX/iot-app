@@ -36,13 +36,13 @@ class _SettingsPageState extends State<SettingsPage> {
           Provider.of<NewDrugData>(context, listen: false).ipAddress =
               prefs.getString('ipAddress')!;
         }
+        print('adresse IP : ${prefs.getString('ipAddress')}');
+      }
+      if (mounted) {
+        _controller.text =
+            Provider.of<NewDrugData>(context, listen: false).ipAddress;
       }
     });
-
-    if (mounted) {
-      _controller.text =
-          Provider.of<NewDrugData>(context, listen: false).ipAddress;
-    }
   }
 
   @override
