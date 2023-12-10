@@ -157,19 +157,19 @@ class NewDrugData extends ChangeNotifier {
     int getDayIndex(String day) {
       switch (day) {
         case 'Lundi':
-          return 0;
-        case 'Mardi':
           return 1;
-        case 'Mercredi':
+        case 'Mardi':
           return 2;
-        case 'Jeudi':
+        case 'Mercredi':
           return 3;
-        case 'Vendredi':
+        case 'Jeudi':
           return 4;
-        case 'Samedi':
+        case 'Vendredi':
           return 5;
-        case 'Dimanche':
+        case 'Samedi':
           return 6;
+        case 'Dimanche':
+          return 0;
         default:
           return -1; // Indication d'une erreur ou d'une valeur non valide
       }
