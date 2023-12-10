@@ -39,36 +39,59 @@ class _SettingsPageState extends State<SettingsPage> {
         title: const Text('Paramètres'),
       ),
       body: // zone de texte pour l'adresse IP du broker MQTT
+          Column(
+        children: [
           Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-        child: Consumer<NewDrugData>(
-          builder: (context, newDrugData, child) => TextField(
-            controller: _controller,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: InputDecoration(
-              hintText: 'Adresse IP broker MQTT',
-              labelText:
-                  'Adresse IP broker MQTT', // Add this line for the floating label
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: const BorderSide(color: Colors.black, width: 1.0),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(10.0),
-                borderSide: const BorderSide(color: Colors.black, width: 2.0),
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+            child: Consumer<NewDrugData>(
+              builder: (context, newDrugData, child) => TextField(
+                controller: _controller,
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+                decoration: InputDecoration(
+                  hintText: 'Adresse IP broker MQTT',
+                  labelText:
+                      'Adresse IP broker MQTT', // Add this line for the floating label
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Colors.black, width: 1.0),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    borderSide:
+                        const BorderSide(color: Colors.black, width: 2.0),
+                  ),
+                ),
+                onChanged: (value) {
+                  value = changeComaToDot(value);
+                  _controller.text = value;
+                  newDrugData.ipAddress = value.trim();
+                },
+                onEditingComplete: () {
+                  changeComaToDot(_controller.text.trim());
+                  newDrugData.ipAddress = _controller.text.trim();
+                },
               ),
             ),
-            onChanged: (value) {
-              value = changeComaToDot(value);
-              _controller.text = value;
-              newDrugData.ipAddress = value.trim();
-            },
-            onEditingComplete: () {
-              changeComaToDot(_controller.text.trim());
-              newDrugData.ipAddress = _controller.text.trim();
-            },
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+            child: Consumer<NewDrugData>(
+              builder: (context, newDrugData, child) => TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  disabledForegroundColor: Colors.grey,
+                ),
+                onPressed: () {
+                  newDrugData.initializeClient();
+                },
+                child: const Text('Valider'),
+              ),
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

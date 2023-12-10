@@ -52,30 +52,11 @@ class NewDrugData extends ChangeNotifier {
 
   // envoyer les données sur le broker MQTT
 
-  late final MqttServerClient client;
+  MqttServerClient client = MqttServerClient('', '');
 
   void initializeClient() {
-    client = MqttServerClient(ipAddress, '');
-    print('current IP address : $ipAddress');
-  }
-  // final client = MqttServerClient('192.168.65.176', '');
-
-  var pongCount = 0; // Pong counter
-
-  Future<int> sendData() async {
-    /// A websocket URL must start with ws:// or wss:// or Dart will throw an exception, consult your websocket MQTT broker
-    /// for details.
-    /// To use websockets add the following lines -:
-    /// client.useWebSocket = true;
-    /// client.port = 80;  ( or whatever your WS port is)
-    /// There is also an alternate websocket implementation for specialist use, see useAlternateWebSocketImplementation
-    /// Note do not set the secure flag if you are using wss, the secure flags is for TCP sockets only.
-    /// You can also supply your own websocket protocol list or disable this feature using the websocketProtocols
-    /// setter, read the API docs for further details here, the vast majority of brokers will support the client default
-    /// list so in most cases you can ignore this.
-
-    /// Initialize the connection client
-    initializeClient();
+    /// Set logging on if needed, defaults to off
+    client.server = _ipAddress;
 
     /// Set logging on if needed, defaults to off
     client.logging(on: true);
@@ -105,6 +86,22 @@ class NewDrugData extends ChangeNotifier {
     /// Set a ping received callback if needed, called whenever a ping response(pong) is received
     /// from the broker.
     client.pongCallback = pong;
+    print('current IP address : $ipAddress');
+  }
+
+  var pongCount = 0; // Pong counter
+
+  Future<int> sendData() async {
+    /// A websocket URL must start with ws:// or wss:// or Dart will throw an exception, consult your websocket MQTT broker
+    /// for details.
+    /// To use websockets add the following lines -:
+    /// client.useWebSocket = true;
+    /// client.port = 80;  ( or whatever your WS port is)
+    /// There is also an alternate websocket implementation for specialist use, see useAlternateWebSocketImplementation
+    /// Note do not set the secure flag if you are using wss, the secure flags is for TCP sockets only.
+    /// You can also supply your own websocket protocol list or disable this feature using the websocketProtocols
+    /// setter, read the API docs for further details here, the vast majority of brokers will support the client default
+    /// list so in most cases you can ignore this.
 
     /// Create a connection message to use or use the default one. The default one sets the
     /// client identifier, any supplied username/password and clean session,

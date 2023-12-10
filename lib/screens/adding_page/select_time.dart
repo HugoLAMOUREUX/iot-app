@@ -46,10 +46,12 @@ class _SelectTimeState extends State<SelectTime> {
         highlightedTextStyle:
             const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         onTimeChange: (time) {
-          setState(() {
-            _dateTime = time;
-            newDrugData.time = _dateTime;
-          });
+          setState(
+            () {
+              _dateTime = time;
+              newDrugData.time = _dateTime;
+            },
+          );
         },
       ),
     );
