@@ -40,7 +40,7 @@ class _SelectTimeState extends State<SelectTime> {
     return Consumer<NewDrugData>(
       builder: (context, newDrugData, child) => TimePickerSpinner(
         spacing: 40,
-        minutesInterval: 15,
+        minutesInterval: 1,
         time: _dateTime,
         normalTextStyle: const TextStyle(fontSize: 20),
         highlightedTextStyle:

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:iot_app/screens/adding_page/adding_page.dart';
+import 'package:iot_app/screens/settings_page/settings_page.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/drugs.dart';
@@ -29,6 +30,21 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // navigate to settings page
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const SettingsPage()));
+            },
+          )
+        ],
       ),
       body: //all the drugs displayed in a list
           Center(

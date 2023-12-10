@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -9,6 +11,7 @@ class NewDrugData extends ChangeNotifier {
   List<String> _days = [];
   DateTime _time = DateTime.now();
   String _name = '';
+  String _ipAddress = '';
 
   void addDay(String day) {
     _days.add(day);
@@ -39,9 +42,22 @@ class NewDrugData extends ChangeNotifier {
     notifyListeners();
   }
 
+  set ipAddress(String ipAddress) {
+    _ipAddress = ipAddress;
+    print('nouvelle adresse IP : $_ipAddress');
+    notifyListeners();
+  }
+
+  String get ipAddress => _ipAddress;
+
   // envoyer les données sur le broker MQTT
 
-  final client = MqttServerClient('192.168.31.149', '');
+  late final MqttServerClient client;
+
+  void initializeClient() {
+    client = MqttServerClient(ipAddress, '');
+    print('current IP address : $ipAddress');
+  }
   // final client = MqttServerClient('192.168.65.176', '');
 
   var pongCount = 0; // Pong counter
@@ -57,6 +73,9 @@ class NewDrugData extends ChangeNotifier {
     /// You can also supply your own websocket protocol list or disable this feature using the websocketProtocols
     /// setter, read the API docs for further details here, the vast majority of brokers will support the client default
     /// list so in most cases you can ignore this.
+
+    /// Initialize the connection client
+    initializeClient();
 
     /// Set logging on if needed, defaults to off
     client.logging(on: true);
