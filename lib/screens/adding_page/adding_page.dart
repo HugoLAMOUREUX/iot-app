@@ -24,72 +24,78 @@ class _AddingPageState extends State<AddingPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Ajouter un médicament'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            // zone de texte pour le nom du médicament
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
-              child: Consumer<NewDrugData>(
-                builder: (context, newDrugData, child) => TextField(
-                  controller: _controller,
-                  onChanged: (value) {
-                    newDrugData.name = value.trim();
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Nom',
-                    labelText: 'Nom', // Add this line for the floating label
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide:
-                          const BorderSide(color: Colors.black, width: 1.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide:
-                          const BorderSide(color: Colors.black, width: 2.0),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-
-            // liste de checkbox des jours de la semaine
-            TileComponent(title: 'Jour', child: const ListDay()),
-
-            // choix de l'heure de prise du médicament
-            TileComponent(
-              title: 'Heure',
-              child: const SelectTime(),
-            ),
-
-            // bouton de validation pour envoyer les données
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Consumer<Drugs>(
-                builder: (context, drugs, child) => Consumer<NewDrugData>(
-                  builder: (context, newDrugData, child) => ElevatedButton(
-                    onPressed: () {
-                      if (newDrugData.days.isNotEmpty &&
-                          newDrugData.name != '') {
-                        drugs.addDrug(DrugModel(
-                            name: newDrugData.name,
-                            days: newDrugData.days.toList(),
-                            hour: newDrugData.time.hour,
-                            minute: newDrugData.time.minute));
-                        newDrugData.sendData();
-                        Navigator.pop(context);
-                      }
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // zone de texte pour le nom du médicament
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 20),
+                child: Consumer<NewDrugData>(
+                  builder: (context, newDrugData, child) => TextField(
+                    controller: _controller,
+                    onChanged: (value) {
+                      newDrugData.name = value.trim();
                     },
-                    child: const Text('Ajouter'),
+                    decoration: InputDecoration(
+                      hintText: 'Nom',
+                      labelText: 'Nom', // Add this line for the floating label
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide:
+                            const BorderSide(color: Colors.black, width: 1.0),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide:
+                            const BorderSide(color: Colors.black, width: 2.0),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 50,
-            )
-          ],
+
+              // liste de checkbox des jours de la semaine
+              TileComponent(title: 'Jour', child: const ListDay()),
+
+              // choix de l'heure de prise du médicament
+              TileComponent(
+                title: 'Heure',
+                child: const SelectTime(),
+              ),
+
+              // bouton de validation pour envoyer les données
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Consumer<Drugs>(
+                  builder: (context, drugs, child) => Consumer<NewDrugData>(
+                    builder: (context, newDrugData, child) => ElevatedButton(
+                      onPressed: () {
+                        if (newDrugData.days.isNotEmpty &&
+                            newDrugData.name != '') {
+                          drugs.addDrug(DrugModel(
+                              name: newDrugData.name,
+                              days: newDrugData.days.toList(),
+                              hour: newDrugData.time.hour,
+                              minute: newDrugData.time.minute));
+                          newDrugData.sendData();
+                          FocusScope.of(context).unfocus();
+                          Navigator.pop(context);
+                        }
+                      },
+                      child: const Text('Ajouter'),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 50,
+              ),
+            ],
+          ),
         ),
       ),
     );
